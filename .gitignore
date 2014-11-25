@@ -1,0 +1,4 @@
+/.settings/
+/vendor/
+/tests/build/
+.project
