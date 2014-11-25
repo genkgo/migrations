@@ -7,7 +7,7 @@
 			]
 		}
 	},
-	"name" : "genkgov2/migrations",
+	"name" : "genkgo/migrations",
 	"require" : {
 		"php" : ">=5.5",
 		"mathiasverraes/classfunctions" : "1.1.0"
