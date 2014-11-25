@@ -14,6 +14,9 @@ It is installable and autoloadable via Composer as [genkgo/migrations](https://p
 
 ### Quality
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/genkgo/migrations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/genkgo/migrations/)
+[![Code Coverage](https://scrutinizer-ci.com/g/genkgo/migrations/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+
 To run the unit tests at the command line, issue `phpunit -c tests/`. [PHPUnit](http://phpunit.de/manual/) is required.
 
 This library attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
