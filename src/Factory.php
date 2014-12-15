@@ -3,6 +3,7 @@ namespace Genkgo\Migrations;
 
 use Closure;
 use Genkgo\Migrations\Utils\FileList;
+use InvalidArgumentException;
 
 /**
  * Class Factory
@@ -56,8 +57,8 @@ class Factory
 
     public function newList($namespace = '\\')
     {
-        if (substr($namespace, -2) !== '\\') {
-            throw new \InvalidArgumentException('Namespace incorrect, follow psr-4 namespacing. Dont forget trailing slashes');
+        if (substr($namespace, -1) !== '\\') {
+            throw new InvalidArgumentException('Namespace incorrect, follow psr-4 namespace rules. Do not forget trailing slashes');
         }
         return (new Collection($this->adapter))->setNamespace($namespace);
     }

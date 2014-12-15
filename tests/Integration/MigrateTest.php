@@ -1,6 +1,7 @@
 <?php
 namespace Genkgo\Migrations\Integration;
 
+use InvalidArgumentException;
 use PDO;
 use Genkgo\Migrations\Adapters\PdoSqliteAdapter;
 use Genkgo\Migrations\Utils\FileList;
@@ -109,6 +110,9 @@ class MigrateTest extends AbstractTestCase
         $result = $list->migrate();
         $this->assertCount(1, $result);
         $this->assertEquals(1, $this->adapter->getNumberOfMigrations());
+
+        $this->setExpectedException(InvalidArgumentException::class);
+        $list = $this->factory->newListFromDirectory(__DIR__.'/namespaced', 'namespaced');
     }
     
     /**
