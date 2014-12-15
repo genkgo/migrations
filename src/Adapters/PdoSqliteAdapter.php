@@ -13,7 +13,7 @@ class PdoSqliteAdapter extends AbstractPdoAdapter
     protected function createTableIfNotExists()
     {
         $this->getPdo()->exec(
-            'CREATE TABLE IF NOT EXISTS migrations(id INTEGER PRIMARY KEY ASC, name TEXT, migration TEXT, direction INTEGER, migrated_on TEXT)'
+            "CREATE TABLE IF NOT EXISTS {$this->table} (id INTEGER PRIMARY KEY ASC, name TEXT, migration TEXT, direction INTEGER, migrated_on TEXT)"
         );
     }
 }

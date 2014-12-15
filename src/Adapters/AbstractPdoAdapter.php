@@ -20,7 +20,7 @@ abstract class AbstractPdoAdapter implements AdapterInterface
     /**
      * @var string
      */
-    private $table = 'migrations';
+    protected $table = 'migrations';
 
     /**
      * @param PDO $pdo
@@ -28,6 +28,14 @@ abstract class AbstractPdoAdapter implements AdapterInterface
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
+    }
+
+    /**
+     * @param $tableName
+     */
+    public function setTableName ($tableName)
+    {
+        $this->table = $tableName;
     }
 
     /**

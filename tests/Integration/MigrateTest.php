@@ -1,10 +1,9 @@
 <?php
 namespace Genkgo\Migrations\Integration;
 
-use InvalidArgumentException;
 use PDO;
+use InvalidArgumentException;
 use Genkgo\Migrations\Adapters\PdoSqliteAdapter;
-use Genkgo\Migrations\Utils\FileList;
 use Genkgo\Migrations\AbstractTestCase;
 use Genkgo\Migrations\Factory;
 use Genkgo\Migrations\MigrationInterface;
@@ -16,7 +15,7 @@ use Genkgo\Migrations\MigrationInterface;
 class MigrateTest extends AbstractTestCase
 {
     /**
-     * @var AdapterInterface
+     * @var PdoSqliteAdapter
      */
     private $adapter;
 
@@ -112,7 +111,7 @@ class MigrateTest extends AbstractTestCase
         $this->assertEquals(1, $this->adapter->getNumberOfMigrations());
 
         $this->setExpectedException(InvalidArgumentException::class);
-        $list = $this->factory->newListFromDirectory(__DIR__.'/namespaced', 'namespaced');
+        $this->factory->newListFromDirectory(__DIR__.'/namespaced', 'namespaced');
     }
     
     /**
@@ -132,5 +131,20 @@ class MigrateTest extends AbstractTestCase
         }
         
         $this->assertCount(1, $result);
+    }
+
+    /**
+     *
+     */
+    public function testDifferentTableName ()
+    {
+        $this->adapter->setTableName('other_table_name');
+
+        $list = $this->factory->newListFromDirectory(__DIR__.'/migrations');
+        $this->assertCount(2, $list);
+
+        $result = $list->migrate();
+        $this->assertCount(2, $result);
+        $this->assertEquals(2, $this->adapter->getNumberOfMigrations());
     }
 }

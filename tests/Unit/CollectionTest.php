@@ -16,20 +16,29 @@ class CollectionTest extends AbstractTestCase
      * @var Collection
      */
     private $collection;
-    
+
+    /**
+     *
+     */
     protected function setUp()
     {
         $this->collection = new Collection(
             new PdoSqliteAdapter(new PDO('sqlite::memory:'))
         );
     }
-    
+
+    /**
+     *
+     */
     public function testAttach()
     {
         $this->collection->attach(new TestMigration());
         $this->assertCount(1, $this->collection);
     }
 
+    /**
+     *
+     */
     public function testDetach()
     {
         $script = new TestMigration();
