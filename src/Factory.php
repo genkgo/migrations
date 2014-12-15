@@ -56,6 +56,9 @@ class Factory
 
     public function newList($namespace = '\\')
     {
+        if (substr($namespace, -2) !== '\\') {
+            throw new \InvalidArgumentException('Namespace incorrect, follow psr-4 namespacing. Dont forget trailing slashes');
+        }
         return (new Collection($this->adapter))->setNamespace($namespace);
     }
 
