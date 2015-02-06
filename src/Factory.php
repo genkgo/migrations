@@ -15,7 +15,7 @@ class Factory
      *
      * @var AdapterInterface
      */
-    
+
     private $adapter;
 
     /**
@@ -23,13 +23,13 @@ class Factory
      */
 
     private $classLoader;
-    
+
     /**
      *
      * @param AdapterInterface $adapter
      * @param Closure $classLoader
      */
-    
+
     public function __construct(AdapterInterface $adapter, Closure $classLoader = null)
     {
         $this->adapter = $adapter;
@@ -80,7 +80,7 @@ class Factory
             $classname = basename($file, '.php');
             $fullname = $namespace . $classname;
 
-            if (is_a($fullname, MigrationInterface::class, true)) {
+            if (is_a($fullname, "\Genkgo\Migrations\MigrationInterface", true)) {
                 $collection->attach($classloader($fullname));
             }
         }
