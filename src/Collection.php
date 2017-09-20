@@ -103,6 +103,8 @@ class Collection implements Countable
                 $result->attach($item);
             } catch (AlreadyMigratedException $e) {
                 /** we will not execute migrations that are already executed */
+            } catch (NotReadyToMigrateException $e) {
+                /** we will not execute migrations that are not ready to be executed */
             }
         }
         
