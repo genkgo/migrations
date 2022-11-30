@@ -1,9 +1,12 @@
 <?php
-namespace Genkgo\Migrations\Unit;
+
+declare(strict_types=1);
+
+namespace Genkgo\TestMigrations\Unit;
 
 use Genkgo\Migrations\AbstractMigration;
 
-class TestMigration extends AbstractMigration
+final class TestMigration extends AbstractMigration
 {
     public function up()
     {

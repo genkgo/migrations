@@ -1,33 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
 use Genkgo\Migrations\AbstractMigration;
 
-/**
- * Class migration_2014_11_13_11_55
- */
 class migration_with_callback extends AbstractMigration
 {
-    private $someInjection;
+    private mixed $someInjection;
     
-    public function __construct($someInjection)
+    public function __construct(mixed $someInjection)
     {
         $this->someInjection = $someInjection;
     }
 
-    /**
-     *
-     */
     public function up()
     {
     }
 
-    /**
-     *
-     */
     public function down()
     {
     }
     
-    public function getSomeInjection()
+    public function getSomeInjection(): mixed
     {
         return $this->someInjection;
     }

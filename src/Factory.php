@@ -1,75 +1,39 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
-use Closure;
 use Genkgo\Migrations\Utils\FileList;
-use InvalidArgumentException;
 
-/**
- * Class Factory
- * @package Genkgo\Migrations
- */
-class Factory
+final class Factory
 {
-    /**
-     *
-     * @var AdapterInterface
-     */
+    private \Closure $classLoader;
 
-    private $adapter;
-
-    /**
-     * @var Closure
-     */
-
-    private $classLoader;
-
-    /**
-     *
-     * @param AdapterInterface $adapter
-     * @param Closure $classLoader
-     */
-
-    public function __construct(AdapterInterface $adapter, Closure $classLoader = null)
+    public function __construct(private AdapterInterface $adapter, \Closure $classLoader = null)
     {
-        $this->adapter = $adapter;
         $this->setClassLoader($classLoader);
     }
 
-    /**
-     * @param callable $classLoader
-     */
-
-    public function setClassLoader(Closure $classLoader = null)
+    public function setClassLoader(\Closure $classLoader = null): void
     {
         if (null === $classLoader) {
-            $classLoader = function ($classname) {
-                return new $classname;
-            };
+            $classLoader = fn ($classname) => new $classname;
         }
+
         $this->classLoader = $classLoader;
     }
 
-    /**
-     * @param string $namespace
-     * @return Collection
-     */
-
-    public function newList($namespace = '\\')
+    public function newList(string $namespace = '\\'): Collection
     {
-        if (substr($namespace, -1) !== '\\') {
-            throw new InvalidArgumentException('Namespace incorrect, follow psr-4 namespace rules. Do not forget trailing slashes');
+        if (!\str_ends_with($namespace, '\\')) {
+            throw new \InvalidArgumentException('Namespace incorrect, follow psr-4 namespace rules. Do not forget trailing slashes');
         }
+
         return (new Collection($this->adapter))->setNamespace($namespace);
     }
 
-    /**
-     * @param string $directory
-     * @param string $namespace
-     * @return Collection
-     */
-
-    public function newListFromDirectory($directory, $namespace = '\\')
+    public function newListFromDirectory(string $directory, string $namespace = '\\'): Collection
     {
         $collection = $this->newList($namespace);
         $classloader = $this->classLoader;
@@ -77,11 +41,11 @@ class Factory
         $files = FileList::fromDirectory($directory);
         foreach ($files as $file) {
             require_once $file;
-            $classname = basename($file, '.php');
-            $fullname = $namespace . $classname;
+            $classname = \basename($file, '.php');
+            $qualifiedClassName = $namespace . $classname;
 
-            if (is_a($fullname, "\Genkgo\Migrations\MigrationInterface", true)) {
-                $collection->attach($classloader($fullname));
+            if (\is_a($qualifiedClassName, MigrationInterface::class, true)) {
+                $collection->attach($classloader($qualifiedClassName));
             }
         }
 

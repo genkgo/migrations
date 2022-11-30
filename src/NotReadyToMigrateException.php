@@ -1,12 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
-use RuntimeException;
-
-/**
- * Class NotReadyToMigrateException
- * @package Genkgo\Migrations
- */
-class NotReadyToMigrateException extends RuntimeException
+final class NotReadyToMigrateException extends \RuntimeException
 {
 }

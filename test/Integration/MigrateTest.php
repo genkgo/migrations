@@ -1,33 +1,22 @@
 <?php
-namespace Genkgo\Migrations\Integration;
 
+declare(strict_types=1);
+
+namespace Genkgo\TestMigrations\Integration;
+
+use Genkgo\TestMigrations\AbstractTestCase;
 use PDO;
 use InvalidArgumentException;
 use Genkgo\Migrations\Adapters\PdoSqliteAdapter;
-use Genkgo\Migrations\AbstractTestCase;
 use Genkgo\Migrations\Factory;
 use Genkgo\Migrations\MigrationInterface;
 
-/**
- * Class MigrateTest
- * @package Genkgo\Migrations
- */
 class MigrateTest extends AbstractTestCase
 {
-    /**
-     * @var PdoSqliteAdapter
-     */
-    private $adapter;
+    private PdoSqliteAdapter $adapter;
+    private Factory $factory;
 
-    /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
-     *
-     */
-    public function setUp()
+    public function setUp(): void
     {
         $pdo = new PDO('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -37,18 +26,16 @@ class MigrateTest extends AbstractTestCase
         $this->adapter = $adapter;
     }
 
-    /**
-     *
-     */
-    public function testUpgrade()
+    public function testUpgrade(): void
     {
         $list = $this->factory->newListFromDirectory(__DIR__.'/migrations');
         $this->assertCount(2, $list);
-        
+
         $result = $list->migrate();
         $this->assertCount(2, $result);
         $this->assertEquals(2, $this->adapter->getNumberOfMigrations());
-        
+
+        /** @var \migration_2014_11_13_11_55|\migration_2014_11_13_12_05 $migration */
         foreach ($result as $migration) {
             $this->assertEquals('up', $migration->getExecuted());
         }
@@ -57,17 +44,15 @@ class MigrateTest extends AbstractTestCase
         $this->assertCount(0, $result);
     }
 
-    /**
-     *
-     */
-    public function testDowngrade()
+    public function testDowngrade(): void
     {
         $list = $this->factory->newListFromDirectory(__DIR__.'/migrations');
         $list->migrate();
         
         $result = $list->migrate(MigrationInterface::DIRECTION_DOWN);
         $this->assertCount(2, $result);
-        
+
+        /** @var \migration_2014_11_13_11_55|\migration_2014_11_13_12_05 $migration */
         foreach ($result as $migration) {
             $this->assertEquals('down', $migration->getExecuted());
         }
@@ -78,10 +63,7 @@ class MigrateTest extends AbstractTestCase
         $this->assertCount(0, $result);
     }
 
-    /**
-     *
-     */
-    public function testBoth()
+    public function testBoth(): void
     {
         $list = $this->factory->newListFromDirectory(__DIR__.'/migrations');
 
@@ -94,14 +76,11 @@ class MigrateTest extends AbstractTestCase
         $this->assertEquals(4, $this->adapter->getNumberOfMigrations());
     
         $list->migrate();
-        $result = $this->assertCount(2, $result);
+        $this->assertCount(2, $result);
         $this->assertEquals(6, $this->adapter->getNumberOfMigrations());
     }
 
-    /**
-     *
-     */
-    public function testNamespace()
+    public function testNamespace(): void
     {
         $list = $this->factory->newListFromDirectory(__DIR__.'/namespaced', 'namespaced\\');
 
@@ -110,14 +89,11 @@ class MigrateTest extends AbstractTestCase
         $this->assertCount(1, $result);
         $this->assertEquals(1, $this->adapter->getNumberOfMigrations());
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->factory->newListFromDirectory(__DIR__.'/namespaced', 'namespaced');
     }
     
-    /**
-     *
-     */
-    public function testCallback()
+    public function testCallback(): void
     {
         $this->factory->setClassLoader(function ($classname) {
             return new $classname('inject here');
@@ -126,6 +102,7 @@ class MigrateTest extends AbstractTestCase
         $list = $this->factory->newListFromDirectory(__DIR__.'/callback');
 
         $result = $list->migrate();
+        /** @var \migration_with_callback $migration */
         foreach ($result as $migration) {
             $this->assertEquals('inject here', $migration->getSomeInjection());
         }
@@ -133,10 +110,7 @@ class MigrateTest extends AbstractTestCase
         $this->assertCount(1, $result);
     }
 
-    /**
-     *
-     */
-    public function testDifferentTableName ()
+    public function testDifferentTableName(): void
     {
         $this->adapter->setTableName('other_table_name');
 

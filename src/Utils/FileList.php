@@ -1,36 +1,32 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations\Utils;
 
-use DirectoryIterator;
-use IteratorAggregate;
-use ArrayIterator;
-
-class FileList implements IteratorAggregate
+/**
+ * @implements \IteratorAggregate<string>
+ */
+final class FileList implements \IteratorAggregate
 {
     /**
-     * @var array
+     * @var array<int, string>
      */
-    private $files = [];
+    private array $files = [];
 
     /**
-     * @return ArrayIterator|\Traversable
+     * @return \ArrayIterator<int, string>
      */
-
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
-        return new ArrayIterator($this->files);
+        return new \ArrayIterator($this->files);
     }
 
-    /**
-     * @param $directory
-     * @return FileList
-     */
-    
-    public static function fromDirectory($directory)
+    public static function fromDirectory(string $directory): self
     {
-        $list = new static;
+        $list = new self;
         
-        $iterator = new DirectoryIterator($directory);
+        $iterator = new \DirectoryIterator($directory);
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() == 'php') {
                 $list->files[] = $file->getPathname();

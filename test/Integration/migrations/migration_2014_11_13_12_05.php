@@ -1,35 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 use Genkgo\Migrations\AbstractMigration;
 
-/**
- * Class migration_2014_11_13_11_55
- */
-class migration_2014_11_13_11_55 extends AbstractMigration
+final class migration_2014_11_13_12_05 extends AbstractMigration
 {
-    /**
-     * @var
-     */
-    private $executed;
+    private string $executed = '';
 
-    /**
-     *
-     */
     public function up()
     {
         $this->executed = 'up';
     }
 
-    /**
-     *
-     */
     public function down()
     {
         $this->executed = 'down';
     }
 
-    /**
-     * @return mixed
-     */
     public function getExecuted()
     {
         return $this->executed;
