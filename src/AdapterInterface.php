@@ -1,33 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
-/**
- * Interface AdapterInterface
- * @package Genkgo\Migrations
- */
 interface AdapterInterface
 {
-    /**
-     *
-     * @param string $namespace
-     * @param MigrationInterface $migration
-     * @throws AlreadyMigratedException
-     */
+    public function upgrade(string $namespace, MigrationInterface $migration): void;
     
-    public function upgrade($namespace, MigrationInterface $migration);
+    public function downgrade(string $namespace, MigrationInterface $migration): void;
     
-    /**
-     *
-     * @param string $namespace
-     * @param MigrationInterface $migration
-     * @throws AlreadyMigratedException
-     */
-    
-    public function downgrade($namespace, MigrationInterface $migration);
-    
-    /**
-     *
-     */
-    
-    public function setup();
+    public function setup(): void;
 }

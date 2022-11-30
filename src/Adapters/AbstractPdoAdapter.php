@@ -1,54 +1,30 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations\Adapters;
 
-use PDO;
 use Genkgo\Migrations\AdapterInterface;
 use Genkgo\Migrations\MigrationInterface;
 use Genkgo\Migrations\AlreadyMigratedException;
 
-/**
- * Class AbstractPdoAdapter
- * @package Genkgo\Migrations\Adapters
- */
 abstract class AbstractPdoAdapter implements AdapterInterface
 {
-    /**
-     * @var PDO
-     */
-    private $pdo;
+    protected string $table = 'migrations';
 
-    /**
-     * @var string
-     */
-    protected $table = 'migrations';
-
-    /**
-     * @param PDO $pdo
-     */
-    public function __construct(PDO $pdo)
+    public function __construct(private \PDO $pdo)
     {
-        $this->pdo = $pdo;
     }
 
-    /**
-     * @param $tableName
-     */
-    public function setTableName ($tableName)
+    public function setTableName(string $tableName): void
     {
         $this->table = $tableName;
     }
 
-    /**
-     * @return void
-     */
-    abstract protected function createTableIfNotExists();
+    abstract protected function createTableIfNotExists(): void;
 
 
-    /**
-     * @param $namespace
-     * @param MigrationInterface $migration
-     */
-    public function upgrade($namespace, MigrationInterface $migration)
+    public function upgrade(string $namespace, MigrationInterface $migration): void
     {
         $this->createTableIfNotExists();
         $this->verifyNotMigrated($namespace, $migration, MigrationInterface::DIRECTION_UP);
@@ -56,11 +32,7 @@ abstract class AbstractPdoAdapter implements AdapterInterface
         $this->log($namespace, $migration, MigrationInterface::DIRECTION_UP);
     }
 
-    /**
-     * @param $namespace
-     * @param MigrationInterface $migration
-     */
-    public function downgrade($namespace, MigrationInterface $migration)
+    public function downgrade(string $namespace, MigrationInterface $migration): void
     {
         $this->createTableIfNotExists();
         $this->verifyNotMigrated($namespace, $migration, MigrationInterface::DIRECTION_DOWN);
@@ -68,21 +40,12 @@ abstract class AbstractPdoAdapter implements AdapterInterface
         $this->log($namespace, $migration, MigrationInterface::DIRECTION_DOWN);
     }
 
-    /**
-     * @return PDO
-     */
-    protected function getPdo()
+    protected function getPdo(): \PDO
     {
         return $this->pdo;
     }
 
-
-    /**
-     * @param $namespace
-     * @param MigrationInterface $migration
-     * @param $direction
-     */
-    private function verifyNotMigrated($namespace, MigrationInterface $migration, $direction)
+    private function verifyNotMigrated(string $namespace, MigrationInterface $migration, int $direction): void
     {
         $query = "SELECT * FROM {$this->table} WHERE name = ? AND migration = ? ORDER BY migrated_on DESC, id DESC LIMIT 1";
     
@@ -91,46 +54,35 @@ abstract class AbstractPdoAdapter implements AdapterInterface
             $namespace,
             $migration->getName(),
         ]);
-    
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        /** @var false|array{name: string, migration: string, direction: int, migrated_on: string} $result */
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if ($result && $result['direction'] == $direction) {
             throw new AlreadyMigratedException();
         }
     }
 
-    /**
-     * @param $namespace
-     * @param MigrationInterface $migration
-     * @param $direction
-     */
-    private function log($namespace, MigrationInterface $migration, $direction)
+    private function log(string $namespace, MigrationInterface $migration, int $direction): void
     {
         $statement = $this->pdo->prepare("INSERT INTO {$this->table} (name, migration, direction, migrated_on) VALUES (?, ?, ?, ?)");
         $statement->execute([
             $namespace,
             $migration->getName(),
             $direction,
-            date('Y-m-d H:i:s')
+            \date('Y-m-d H:i:s')
         ]);
     }
 
-    /**
-     * @return int
-     */
-    public function getNumberOfMigrations()
+    public function getNumberOfMigrations(): int
     {
         $query = "SELECT id FROM {$this->table}";
     
         $statement = $this->pdo->prepare($query);
         $statement->execute();
-        return count($statement->fetchAll());
+        return \count($statement->fetchAll());
     }
     
-    /**
-     *
-     */
-    
-    public function setup()
+    public function setup(): void
     {
         $this->createTableIfNotExists();
     }

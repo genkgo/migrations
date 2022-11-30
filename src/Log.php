@@ -1,44 +1,34 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
-use ArrayIterator;
-use Countable;
-
 /**
- * Class Log
- * @package Genkgo\Migrations
+ * @implements \IteratorAggregate<MigrationInterface>
  */
-class Log implements \IteratorAggregate, \Countable
+final class Log implements \IteratorAggregate, \Countable
 {
     /**
-     * @var array
+     * @var array<int, MigrationInterface>
      */
-    private $log = [];
+    private array $log = [];
 
-    /**
-     * @param MigrationInterface $migration
-     */
-    
-    public function attach(MigrationInterface $migration)
+    public function attach(MigrationInterface $migration): void
     {
         $this->log[] = $migration;
     }
 
     /**
-     * @return ArrayIterator|\Traversable
+     * @return \ArrayIterator<int, MigrationInterface>
      */
-    
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
-        return new ArrayIterator($this->log);
+        return new \ArrayIterator($this->log);
     }
 
-    /**
-     * @return int
-     */
-    
-    public function count()
+    public function count(): int
     {
-        return count($this->log);
+        return \count($this->log);
     }
 }

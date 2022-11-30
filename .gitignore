@@ -1,5 +1,5 @@
 /.idea/
-/.settings/
 /vendor/
-/tests/build/
-.project
+/test/build/
+/.phpunit.result.cache
+/.php-cs-fixer.cache

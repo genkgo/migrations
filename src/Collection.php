@@ -1,100 +1,55 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
-use Countable;
-use InvalidArgumentException;
-
-/**
- * Class Collection
- * @package Genkgo\Migrations
- */
-class Collection implements Countable
+final class Collection implements \Countable
 {
     /**
-     *
-     * @var AdapterInterface
+     * @var array<int, MigrationInterface>
      */
-    private $adapter;
+    private array $list = [];
+    private string $namespace = '';
     
-    /**
-     *
-     * @var array
-     */
-    private $list = [];
-    
-    /**
-     *
-     * @var string
-     */
-    private $namespace;
-    
-    /**
-     *
-     * @param AdapterInterface $adapter
-     */
-    
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(private AdapterInterface $adapter)
     {
-        $this->adapter = $adapter;
     }
     
-    /**
-     *
-     * @param MigrationInterface $migration
-     */
-    
-    public function attach(MigrationInterface $migration)
+    public function attach(MigrationInterface $migration): void
     {
         $this->list[] = $migration;
     }
     
-    /**
-     *
-     * @param MigrationInterface $migration
-     */
-    
-    public function detach(MigrationInterface $migration)
+    public function detach(MigrationInterface $migration): void
     {
-        if (($key = array_search($migration, $this->list)) !== false) {
+        if (($key = \array_search($migration, $this->list, true)) !== false) {
             unset($this->list[$key]);
-        } else {
-            throw new InvalidArgumentException('Migration not in collection');
+            return;
         }
+
+        throw new \InvalidArgumentException('Migration not in collection');
     }
 
-    /**
-     * @param $namespace
-     * @return $this
-     */
-
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): self
     {
         $this->namespace = $namespace;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @param int $direction
-     * @return Log
-     */
-    
-    public function migrate($direction = MigrationInterface::DIRECTION_UP)
+    public function migrate(int $direction = MigrationInterface::DIRECTION_UP): Log
     {
         $result = new Log();
         
-        usort($this->list, function ($item1, $item2) {
+        \usort($this->list, function ($item1, $item2) {
             $class1 = $item1->getName();
             $class2 = $item2->getName();
-            return strcmp($class1, $class2);
+            return \strcmp($class1, $class2);
         });
         
         foreach ($this->list as $item) {
@@ -111,12 +66,7 @@ class Collection implements Countable
         return $result;
     }
 
-    /**
-     * @param MigrationInterface $migration
-     * @param $direction
-     */
-    
-    private function execute(MigrationInterface $migration, $direction)
+    private function execute(MigrationInterface $migration, int $direction): void
     {
         if ($direction == MigrationInterface::DIRECTION_UP) {
             $this->adapter->upgrade(
@@ -131,12 +81,8 @@ class Collection implements Countable
         }
     }
 
-    /**
-     * @return int
-     */
-    
-    public function count()
+    public function count(): int
     {
-        return count($this->list);
+        return \count($this->list);
     }
 }

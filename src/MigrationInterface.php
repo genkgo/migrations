@@ -1,26 +1,23 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Genkgo\Migrations;
 
 interface MigrationInterface
 {
-    const DIRECTION_UP = 1;
-
-    const DIRECTION_DOWN = 2;
+    public const DIRECTION_UP = 1;
+    public const DIRECTION_DOWN = 2;
 
     /**
      * @return void
      */
-    
     public function up();
-
 
     /**
      * @return void
      */
     public function down();
     
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 }

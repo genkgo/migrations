@@ -1,28 +1,24 @@
 <?php
-namespace Genkgo\Migrations;
 
-use Verraes\ClassFunctions\ClassFunctions;
+declare(strict_types=1);
+
+namespace Genkgo\Migrations;
 
 abstract class AbstractMigration implements MigrationInterface
 {
     /**
      * @return void
      */
-    
     abstract public function up();
-
 
     /**
      * @return void
      */
     abstract public function down();
     
-    /**
-     * @return string
-     */
-    
-    public function getName()
+    public function getName(): string
     {
-        return ClassFunctions::short($this);
+        $parts = \explode('\\', $this::class);
+        return \end($parts);
     }
 }

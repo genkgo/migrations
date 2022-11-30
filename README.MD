@@ -1,25 +1,14 @@
 # Genkgo.Migrations
 
-Library to make migrations easy. If you are looking for a tool (not a library) that has database migrations integrated
-and comes with a command line interface, please have a look at [robmorgan/phinx](https://github.com/robmorgan/phinx).
-If you need a library without these tools, but can work with any database abstraction layer or other dependencies, this
-library might be the correct choice.
+Library to make migrations easy.
 
 ### Installation
 
-Requires PHP 5.5 or later. There are no plans to support PHP 5.4 or PHP 5.3. In case this is an obstacle for you,
-conversion should be no problem. The library is very small.
-
-It is installable and autoloadable via Composer as [genkgo/migrations](https://packagist.org/packages/genkgo/migrations).
+Requires PHP 8.0 or later. It is installable and autoloadable via Composer as [genkgo/migrations](https://packagist.org/packages/genkgo/migrations).
 
 ### Quality
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/genkgo/migrations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/genkgo/migrations/)
-[![Code Coverage](https://scrutinizer-ci.com/g/genkgo/migrations/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/genkgo/migrations/)
-[![Build Status](https://travis-ci.org/genkgo/migrations.png?branch=master)](https://travis-ci.org/genkgo/migrations)
-[![Dependency Status](https://www.versioneye.com/user/projects/54b3910d171cf95e6a0001d3/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54b3910d171cf95e6a0001d3)
-
-To run the unit tests at the command line, issue `phpunit -c tests/`. [PHPUnit](http://phpunit.de/manual/) is required.
+To run the unit tests at the command line, issue `vendor/bin/phpunit -c phpunit.xml`. [PHPUnit](http://phpunit.de/manual/) is required.
 
 This library attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
 you notice compliance oversights, please send a patch via pull request.
@@ -157,12 +146,6 @@ $list = $this->factory->newListFromDirectory($directory,'Vendor\\Plugin\\');
 $list->migrate();
 ```
 
-
-## Roadmap
-
-- Add support for rolling back to a certain point in time
-- Optimize the PDO adapter, too many queries now (one per migration). Should be one per namespace.
-- ... no further plans yet
 
 ## Contributing
 
