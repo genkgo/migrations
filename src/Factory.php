@@ -8,11 +8,15 @@ use Genkgo\Migrations\Utils\FileList;
 
 final class Factory
 {
-    private \Closure $classLoader;
+    private ClassLoaderInterface $classLoader;
 
-    public function __construct(private AdapterInterface $adapter, \Closure $classLoader = null)
+    public function __construct(private AdapterInterface $adapter, ClassLoaderInterface|\Closure $classLoader = null)
     {
-        $this->setClassLoader($classLoader);
+        if ($classLoader instanceof ClassLoaderInterface) {
+            $this->classLoader = $classLoader;
+        } else {
+            $this->setClassLoader($classLoader);
+        }
     }
 
     public function setClassLoader(\Closure $classLoader = null): void
@@ -21,7 +25,7 @@ final class Factory
             $classLoader = fn ($classname) => new $classname;
         }
 
-        $this->classLoader = $classLoader;
+        $this->classLoader = new CallbackClassLoader($classLoader);
     }
 
     public function newList(string $namespace = '\\'): Collection
@@ -44,9 +48,7 @@ final class Factory
             $classname = \basename($file, '.php');
             $qualifiedClassName = $namespace . $classname;
 
-            if (\is_a($qualifiedClassName, MigrationInterface::class, true)) {
-                $collection->attach($classloader($qualifiedClassName));
-            }
+            $collection->attach($this->classLoader->newInstance($qualifiedClassName));
         }
 
         return $collection;
