@@ -10,8 +10,10 @@ final class Factory
 {
     private ClassLoaderInterface $classLoader;
 
-    public function __construct(private AdapterInterface $adapter, ClassLoaderInterface|\Closure $classLoader = null)
-    {
+    public function __construct(
+        private readonly AdapterInterface $adapter,
+        ClassLoaderInterface|\Closure|null $classLoader = null
+    ) {
         if ($classLoader instanceof ClassLoaderInterface) {
             $this->classLoader = $classLoader;
         } else {
@@ -19,7 +21,7 @@ final class Factory
         }
     }
 
-    public function setClassLoader(\Closure $classLoader = null): void
+    public function setClassLoader(?\Closure $classLoader = null): void
     {
         if (null === $classLoader) {
             $classLoader = fn ($classname) => new $classname;
